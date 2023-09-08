@@ -33,6 +33,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import dev.echirchir.binaria.ui.theme.gray25
+import dev.echirchir.binaria.ui.theme.green100
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -89,9 +91,9 @@ fun BinariaTextField(
                     .testTag(label + "1"),
                 singleLine = !isLongText,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
-                    placeholderColor = Color(0.88f, 0.89f, 0.9f, 1.0f),
-                    unfocusedBorderColor = Color(0.75f, 0.76f, 0.79f, 1.0f),
-                    focusedBorderColor = Color(0.0f, 0.46f, 0.33f, 1.0f)
+                    placeholderColor = gray25,
+                    unfocusedBorderColor = gray25,
+                    focusedBorderColor = green100
                 ),
                 value = value,
                 onValueChange = {

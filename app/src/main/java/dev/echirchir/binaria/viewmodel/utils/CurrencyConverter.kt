@@ -22,6 +22,10 @@ fun getExchangeRateByCountry(countryName: String, exchangeRatesMap: Map<String, 
     return countryData?.currency?.let { exchangeRatesMap[it] }
 }
 
+fun getCurrencyByCountry(country: String): String? {
+    return countriesMap[country]?.currency?.uppercase()
+}
+
 fun getPhoneLengthByCountry(country: String): Int? {
     return countriesMap[country]?.phoneLength
 }

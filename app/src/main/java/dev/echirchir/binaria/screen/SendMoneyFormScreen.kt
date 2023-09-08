@@ -32,6 +32,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,9 +59,11 @@ import dev.echirchir.binaria.common.AmountTextField
 import dev.echirchir.binaria.common.BinariaButton
 import dev.echirchir.binaria.common.BinariaDropDown
 import dev.echirchir.binaria.common.BinariaTextField
+import dev.echirchir.binaria.common.CountriesBottomSheet
 import dev.echirchir.binaria.common.Route
 import dev.echirchir.binaria.common.TextIcon
 import dev.echirchir.binaria.viewmodel.ExchangeRatesViewModel
+import dev.echirchir.binaria.viewmodel.utils.countriesMap
 import kotlinx.coroutines.launch
 
 
@@ -80,14 +83,25 @@ fun SendMoneyFormScreen(
         bottomSheetState = BottomSheetState(initialValue = BottomSheetValue.Collapsed, density = density)
     )
 
+    val countries = countriesMap.keys.toList()
+
     val countryPrompt = "Select country"
     var selectedCountry by remember { mutableStateOf(countryPrompt) }
-    var selectedCountryCode by remember { mutableStateOf(state.countryCode) }
 
     BottomSheetScaffold(
         scaffoldState = bottomSheetScaffoldState,
         sheetPeekHeight = 0.dp,
-        sheetContent = {}
+        sheetContent = {
+            CountriesBottomSheet(countries = countries) {
+                selectedCountry = it
+                viewModel.onAction(ExchangeRatesViewModel.Action.OnCountrySelected(it, countryPrompt))
+            }
+            LaunchedEffect(key1 = Unit) {
+                scope.launch {
+                    bottomSheetScaffoldState.bottomSheetState.collapse()
+                }
+            }
+        }
     ) { paddingValues ->
         Column(
             verticalArrangement = Arrangement.SpaceBetween,
@@ -124,13 +138,14 @@ fun SendMoneyFormScreen(
 
                 Text(
                     text = "Send money",
-                    style = MaterialTheme.typography.h5
+                    style = MaterialTheme.typography.h5,
+                    fontWeight = FontWeight.Bold
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
 
                 Text(
-                    text = "Complete the form below to send money to your friend or family",
+                    text = "Complete the form below to send money to your friends or family members!",
                     style = MaterialTheme.typography.body1
                 )
 
@@ -162,7 +177,7 @@ fun SendMoneyFormScreen(
                 BinariaTextField(
                     value = state.lastName,
                     onChange = {
-                        viewModel.onAction(ExchangeRatesViewModel.Action.OnFirstNameChanged(it))
+                        viewModel.onAction(ExchangeRatesViewModel.Action.OnLastNameChanged(it))
                     },
                     hint = "Munyao",
                     onDone = {},
@@ -182,18 +197,29 @@ fun SendMoneyFormScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                val nativeCountryLabel = "Select country"
-
-                BinariaDropDown(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = selectedCountry,
-                    label = nativeCountryLabel
-                ) {
-                    keyboardController?.hide()
-                    scope.launch {
-                        bottomSheetScaffoldState.bottomSheetState.expand()
+                BinariaTextField(
+                    value = state.country,
+                    onChange = {},
+                    hint = countryPrompt,
+                    onDone = {},
+                    label = "Select Country",
+                    fieldDescription = "",
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(onNext = {
+                        focusManager.moveFocus(FocusDirection.Down)
+                    }),
+                    isValid = state.firstNameError == null,
+                    errorMessage = "First name is required",
+                    enabled = false,
+                    modifier = Modifier.clickable {
+                        scope.launch {
+                            bottomSheetScaffoldState.bottomSheetState.expand()
+                        }
                     }
-                }
+                )
 
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -231,7 +257,7 @@ fun SendMoneyFormScreen(
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
                         ){
-                            TextIcon(text = selectedCountryCode)
+                            TextIcon(text = state.prefix)
                         }
 
                         Spacer(modifier = Modifier.width(8.dp))
@@ -249,14 +275,15 @@ fun SendMoneyFormScreen(
                             placeholder = {
                                 Text(text = "XXXXXXX")
                             },
-                            enabled = true,
+                            enabled = state.country.isNotEmpty(),
+                            isError = false,
                             value = phoneNumber,
                             onValueChange = {
-                                phoneNumber = it
-                                viewModel.onAction(ExchangeRatesViewModel.Action.OnPhonePrefixChanged(selectedCountryCode.subSequence(1, selectedCountryCode.length).toString()))
-                                viewModel.onAction(ExchangeRatesViewModel.Action.OnPhoneNumberChanged(
-                                    phoneNumber
-                                ))},
+                                viewModel.onAction(ExchangeRatesViewModel.Action.OnPhoneNumberChanged(phoneNumber))
+                                if(it.length <= state.maxPhoneLength) {
+                                    phoneNumber = it
+                                }
+                            },
                             keyboardOptions =  KeyboardOptions(keyboardType = KeyboardType.Phone),
                             keyboardActions = KeyboardActions(
                                 onDone = {
@@ -270,10 +297,12 @@ fun SendMoneyFormScreen(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 AmountTextField(
-                    amountInBinary = "01010101",
-                    amount = "100",
-                    onAmountChange = {},
-                    currency = "Kes",
+                    amountInBinary = state.amountInBinary,
+                    amount = state.amount,
+                    onAmountChange = {
+                         viewModel.onAction(ExchangeRatesViewModel.Action.OnAmountChanged(it))
+                    },
+                    currency = state.currency,
                     isAmountValid = true,
                     onDone = {
                         keyboardController?.hide()
@@ -283,9 +312,11 @@ fun SendMoneyFormScreen(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 BinariaButton(
-                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
                     label = "Send",
-                    enabled = true //state.amount.toString().isNotEmpty() && state.isSendButtonActive
+                    enabled = state.amount.toString().isNotEmpty() && state.isSendButtonActive
                 ) {
                     navController.navigate(Route.Home.SendMoneySuccessScreen)
                 }

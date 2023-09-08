@@ -11,8 +11,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.view.WindowCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -21,6 +25,8 @@ import dev.echirchir.binaria.screen.BinariaProgressDialog
 import dev.echirchir.binaria.screen.HomeScreen
 import dev.echirchir.binaria.screen.SendMoneyFormScreen
 import dev.echirchir.binaria.screen.SendMoneySuccessScreen
+import dev.echirchir.binaria.ui.theme.green100
+import dev.echirchir.binaria.ui.theme.green70
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import dev.echirchir.binaria.viewmodel.ExchangeRatesViewModel
 
@@ -35,12 +41,13 @@ class MainActivity : ComponentActivity() {
 
             val navController = rememberNavController()
 
+            window.statusBarColor = green70.toArgb()
+
             LaunchedEffect(key1 = Unit) {
                 exchangeRatesViewModel.onAction(ExchangeRatesViewModel.Action.OnLoad)
             }
 
             val state = exchangeRatesViewModel.exchangeRatesState
-            val context = LocalContext.current
 
             if (state.isLoading) {
                 BinariaProgressDialog()
