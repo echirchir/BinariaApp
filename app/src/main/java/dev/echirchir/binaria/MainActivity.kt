@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
             ) {
                 NavHost(
                     navController = navController,
-                    startDestination = Route.Home.SendMoneyScreen
+                    startDestination = Route.Home.Home
                 ) {
                     composable(Route.Home.Home) {
                         HomeScreen(navController = navController)

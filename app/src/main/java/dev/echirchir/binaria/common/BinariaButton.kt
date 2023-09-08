@@ -1,16 +1,17 @@
 package dev.echirchir.binaria.common
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
-import dev.echirchir.binaria.ui.theme.gray00
-import dev.echirchir.binaria.ui.theme.green15
+import dev.echirchir.binaria.ui.theme.green100
 
 @Composable
 fun BinariaButton(
@@ -19,18 +20,18 @@ fun BinariaButton(
     enabled: Boolean = true,
     onClick: () -> Unit
 ) {
-    Button(
+    OutlinedButton(
+        border = BorderStroke(1.dp, green100),
         onClick = onClick,
-        modifier = modifier,
+        modifier = modifier.testTag(label),
         enabled = enabled,
         shape = MaterialTheme.shapes.large.copy(all = CornerSize(16.dp)),
-        colors = ButtonDefaults.buttonColors(
-            backgroundColor = Color.Green,
+        colors = ButtonDefaults.outlinedButtonColors(
             contentColor = Color.White,
-            disabledBackgroundColor = green15,
-            disabledContentColor = gray00
+            backgroundColor = green100,
+            disabledContentColor = Color.Gray
         )
-    ) {
+    ){
         Text(text = label)
     }
 }

@@ -58,6 +58,7 @@ import dev.echirchir.binaria.common.AmountTextField
 import dev.echirchir.binaria.common.BinariaButton
 import dev.echirchir.binaria.common.BinariaDropDown
 import dev.echirchir.binaria.common.BinariaTextField
+import dev.echirchir.binaria.common.Route
 import dev.echirchir.binaria.common.TextIcon
 import dev.echirchir.binaria.viewmodel.ExchangeRatesViewModel
 import kotlinx.coroutines.launch
@@ -284,9 +285,9 @@ fun SendMoneyFormScreen(
                 BinariaButton(
                     modifier = Modifier.fillMaxWidth().height(56.dp),
                     label = "Send",
-                    enabled = state.amount.toString().isNotEmpty() && state.isSendButtonActive
+                    enabled = true //state.amount.toString().isNotEmpty() && state.isSendButtonActive
                 ) {
-
+                    navController.navigate(Route.Home.SendMoneySuccessScreen)
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
