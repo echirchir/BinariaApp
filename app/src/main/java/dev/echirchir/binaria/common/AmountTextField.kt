@@ -40,7 +40,7 @@ fun AmountTextField(
     amountInBinary: String,
     amount: String,
     onAmountChange: (String) -> Unit,
-    currency: String,
+    baseCurrency: String,
     isAmountValid: Boolean,
     onDone: () -> Unit = {}
 ) {
@@ -79,7 +79,7 @@ fun AmountTextField(
                 ),
                 trailingIcon = {
                     Text(
-                        text = currency.uppercase(), style = MaterialTheme.typography.h6.copy(
+                        text = baseCurrency.uppercase(), style = MaterialTheme.typography.h6.copy(
                             color = gray25
                         )
                     )
@@ -110,7 +110,7 @@ fun AmountTextField(
                     )
                     .background(if (amount.isEmpty()) gray15 else if (isValid) green05 else red10)
                     .padding(10.dp),
-                text = "Your recipient will receive ${currency.uppercase()} $amountInBinary",
+                text = "Amount to be received: $amountInBinary",
                 style = MaterialTheme.typography.body1.copy(
                     color = if (amount.isEmpty()) gray100 else if (isValid) green100 else red100
                 )

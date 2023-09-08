@@ -64,6 +64,7 @@ import dev.echirchir.binaria.common.Route
 import dev.echirchir.binaria.common.TextIcon
 import dev.echirchir.binaria.viewmodel.ExchangeRatesViewModel
 import dev.echirchir.binaria.viewmodel.utils.countriesMap
+import dev.echirchir.binaria.viewmodel.utils.isBinary
 import kotlinx.coroutines.launch
 
 
@@ -300,9 +301,11 @@ fun SendMoneyFormScreen(
                     amountInBinary = state.amountInBinary,
                     amount = state.amount,
                     onAmountChange = {
-                         viewModel.onAction(ExchangeRatesViewModel.Action.OnAmountChanged(it))
+                        if (it.all { char -> char == '1' || char == '0' }) {
+                            viewModel.onAction(ExchangeRatesViewModel.Action.OnAmountChanged(it))
+                        }
                     },
-                    currency = state.currency,
+                    baseCurrency = state.base.uppercase(),
                     isAmountValid = true,
                     onDone = {
                         keyboardController?.hide()
@@ -316,7 +319,7 @@ fun SendMoneyFormScreen(
                         .fillMaxWidth()
                         .height(56.dp),
                     label = "Send",
-                    enabled = state.amount.toString().isNotEmpty() && state.isSendButtonActive
+                    enabled = state.isSendButtonActive
                 ) {
                     navController.navigate(Route.Home.SendMoneySuccessScreen)
                 }

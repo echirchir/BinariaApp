@@ -33,18 +33,13 @@ class ExchangeRatesViewModel(
             }
             is Action.OnAmountChanged -> {
                 val exchangeRate = getExchangeRateByCountry(exchangeRatesState.country, exchangeRatesState.toMap())
-                var totalAmount = 0
-                if(action.amount.isBinary()) {
-                    totalAmount = exchangeRate!!.toInt() * action.amount.binaryToInt()
-                    exchangeRatesState = exchangeRatesState.copy(amountInBinary = totalAmount.toBinaryString())
-                } else {
-                    exchangeRatesState = exchangeRatesState.copy(amountInBinary = "0")
-                }
+                val totalAmount = exchangeRate!!.toInt() * action.amount.binaryToInt()
+                exchangeRatesState = exchangeRatesState.copy(amount = action.amount, amountInBinary = totalAmount.toBinaryString())
             }
             is Action.OnCountrySelected -> {
-                val prefix = getPhonePrefixByCountry(action.country)
-                val currency = getCurrencyByCountry(action.country)
-                exchangeRatesState = exchangeRatesState.copy(country = action.country, currency = currency!!, countryPrompt = action.prompt, prefix = prefix!!)
+                val prefix = getPhonePrefixByCountry(action.country) ?: "+254"
+                val currency = getCurrencyByCountry(action.country) ?: "KES"
+                exchangeRatesState = exchangeRatesState.copy(country = action.country, currency = currency, countryPrompt = action.prompt, prefix = prefix)
             }
             is Action.OnFirstNameChanged -> {
                 exchangeRatesState = if(action.firstName.isNotEmpty()) {
@@ -96,6 +91,7 @@ class ExchangeRatesViewModel(
                             tzs = rates.tzs,
                             ngn = rates.ngn,
                             ugx = rates.ugx,
+                            base = it.base,
                             isLoading = false
                         )
                     },

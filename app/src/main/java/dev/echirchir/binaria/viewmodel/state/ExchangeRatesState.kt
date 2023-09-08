@@ -1,6 +1,5 @@
 package dev.echirchir.binaria.viewmodel.state
 
-import java.util.Currency
 
 data class ExchangeRatesState(
     val isLoading: Boolean = false,
@@ -8,6 +7,7 @@ data class ExchangeRatesState(
     val ngn: Double = 0.0,
     val tzs: Double = 0.0,
     val ugx: Double = 0.0,
+    val base: String = "",
     val error: String? = null,
     val country: String = "",
     val currency: String = "",
