@@ -25,11 +25,14 @@ class ExchangeRatesViewModel(
 
     fun onAction(action: Action) {
         when(action) {
-            is Action.OnLoad -> {
+            is Action.OnFetchRates -> {
                 fetchExchangeRates()
             }
             is Action.OnResetState -> {
-                exchangeRatesState = ExchangeRatesState()
+                exchangeRatesState = ExchangeRatesState(kes = exchangeRatesState.kes,
+                    ugx = exchangeRatesState.ugx, tzs = exchangeRatesState.tzs,
+                    ngn = exchangeRatesState.ngn, base = exchangeRatesState.base
+                )
             }
             is Action.OnAmountChanged -> {
                 val exchangeRate = getExchangeRateByCountry(exchangeRatesState.country, exchangeRatesState.toMap())
@@ -37,15 +40,15 @@ class ExchangeRatesViewModel(
                 exchangeRatesState = exchangeRatesState.copy(amount = action.amount, amountInBinary = totalAmount.toBinaryString())
             }
             is Action.OnCountrySelected -> {
-                val prefix = getPhonePrefixByCountry(action.country) ?: "+254"
-                val currency = getCurrencyByCountry(action.country) ?: "KES"
+                val prefix = getPhonePrefixByCountry(action.country)
+                val currency = getCurrencyByCountry(action.country)
                 val allowedPhoneLength = getPhoneLengthByCountry(action.country)
                 exchangeRatesState = exchangeRatesState.copy(
                     country = action.country,
                     currency = currency,
                     countryPrompt = action.prompt,
                     prefix = prefix,
-                    maxPhoneLength = allowedPhoneLength ?: 0
+                    maxPhoneLength = allowedPhoneLength
                 )
             }
             is Action.OnFirstNameChanged -> {
@@ -108,7 +111,7 @@ class ExchangeRatesViewModel(
     }
 
     sealed interface Action {
-        object OnLoad: Action
+        object OnFetchRates: Action
         data class OnFirstNameChanged(val firstName: String): Action
         data class OnLastNameChanged(val lastName: String): Action
         data class OnPhonePrefixChanged(val phonePrefix: String): Action

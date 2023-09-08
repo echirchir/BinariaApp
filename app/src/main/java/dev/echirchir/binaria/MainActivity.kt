@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
             window.statusBarColor = green70.toArgb()
 
             LaunchedEffect(key1 = Unit) {
-                exchangeRatesViewModel.onAction(ExchangeRatesViewModel.Action.OnLoad)
+                exchangeRatesViewModel.onAction(ExchangeRatesViewModel.Action.OnFetchRates)
             }
 
             val state = exchangeRatesViewModel.exchangeRatesState
