@@ -39,6 +39,7 @@ import dev.echirchir.binaria.ui.theme.red50
 fun AmountTextField(
     amountInBinary: String,
     amount: String,
+    isEnabled: Boolean,
     onAmountChange: (String) -> Unit,
     baseCurrency: String,
     isAmountValid: Boolean,
@@ -63,6 +64,7 @@ fun AmountTextField(
                     .testTag("Amount Field"),
                 singleLine = true,
                 value = amount,
+                enabled = isEnabled,
                 textStyle = MaterialTheme.typography.h6,
                 onValueChange = { onAmountChange(it) },
                 shape = RoundedCornerShape(

@@ -42,7 +42,7 @@ fun HomeScreen(
         Spacer(modifier = Modifier.height(48.dp))
 
         Text(
-            text = "Welcome to Binarian!",
+            text = "Welcome to Binaria!",
             style = MaterialTheme.typography.h5
         )
 

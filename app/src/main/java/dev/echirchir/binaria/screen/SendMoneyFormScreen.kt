@@ -138,7 +138,7 @@ fun SendMoneyFormScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "Send money",
+                    text = "Send Transactions",
                     style = MaterialTheme.typography.h5,
                     fontWeight = FontWeight.Bold
                 )
@@ -213,7 +213,7 @@ fun SendMoneyFormScreen(
                         focusManager.moveFocus(FocusDirection.Down)
                     }),
                     isValid = state.firstNameError == null,
-                    errorMessage = "First name is required",
+                    errorMessage = "Country name is required",
                     enabled = false,
                     modifier = Modifier.clickable {
                         scope.launch {
@@ -223,8 +223,6 @@ fun SendMoneyFormScreen(
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
-
-                var phoneNumber by remember { mutableStateOf("")}
 
                 Column(
                     modifier = Modifier.fillMaxWidth(),
@@ -273,16 +271,13 @@ fun SendMoneyFormScreen(
                                 unfocusedBorderColor = Color(0.75f, 0.76f, 0.79f, 1.0f),
                                 focusedBorderColor = Color(0.0f, 0.46f, 0.33f, 1.0f)
                             ),
-                            placeholder = {
-                                Text(text = "XXXXXXX")
-                            },
+                            placeholder = { Text(text = "XXXXXXX") },
                             enabled = state.country.isNotEmpty(),
-                            isError = false,
-                            value = phoneNumber,
+                            isError = state.phone.length > state.maxPhoneLength,
+                            value = state.phone,
                             onValueChange = {
-                                viewModel.onAction(ExchangeRatesViewModel.Action.OnPhoneNumberChanged(phoneNumber))
-                                if(it.length <= state.maxPhoneLength) {
-                                    phoneNumber = it
+                                if (it.length <= state.maxPhoneLength) {
+                                    viewModel.onAction(ExchangeRatesViewModel.Action.OnPhoneNumberChanged(it))
                                 }
                             },
                             keyboardOptions =  KeyboardOptions(keyboardType = KeyboardType.Phone),
@@ -306,6 +301,7 @@ fun SendMoneyFormScreen(
                         }
                     },
                     baseCurrency = state.base.uppercase(),
+                    isEnabled = state.country.isNotEmpty(),
                     isAmountValid = true,
                     onDone = {
                         keyboardController?.hide()
@@ -315,9 +311,7 @@ fun SendMoneyFormScreen(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 BinariaButton(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
                     label = "Send",
                     enabled = state.isSendButtonActive
                 ) {

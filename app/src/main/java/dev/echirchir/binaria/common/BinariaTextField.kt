@@ -141,11 +141,5 @@ fun TextIcon(text: String = "+254") {
             text = text,
             style = MaterialTheme.typography.body1
         )
-        Icon(
-            imageVector = Icons.Default.ArrowDropDown,
-            contentDescription = "dropdown indicator",
-            tint = Color.Gray,
-            modifier = Modifier.size(24.dp)
-        )
     }
 }

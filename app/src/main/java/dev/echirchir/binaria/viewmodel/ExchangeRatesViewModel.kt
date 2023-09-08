@@ -33,13 +33,20 @@ class ExchangeRatesViewModel(
             }
             is Action.OnAmountChanged -> {
                 val exchangeRate = getExchangeRateByCountry(exchangeRatesState.country, exchangeRatesState.toMap())
-                val totalAmount = exchangeRate!!.toInt() * action.amount.binaryToInt()
+                val totalAmount = (exchangeRate?.toInt() ?: 0) * action.amount.binaryToInt()
                 exchangeRatesState = exchangeRatesState.copy(amount = action.amount, amountInBinary = totalAmount.toBinaryString())
             }
             is Action.OnCountrySelected -> {
                 val prefix = getPhonePrefixByCountry(action.country) ?: "+254"
                 val currency = getCurrencyByCountry(action.country) ?: "KES"
-                exchangeRatesState = exchangeRatesState.copy(country = action.country, currency = currency, countryPrompt = action.prompt, prefix = prefix)
+                val allowedPhoneLength = getPhoneLengthByCountry(action.country)
+                exchangeRatesState = exchangeRatesState.copy(
+                    country = action.country,
+                    currency = currency,
+                    countryPrompt = action.prompt,
+                    prefix = prefix,
+                    maxPhoneLength = allowedPhoneLength ?: 0
+                )
             }
             is Action.OnFirstNameChanged -> {
                 exchangeRatesState = if(action.firstName.isNotEmpty()) {
@@ -56,15 +63,10 @@ class ExchangeRatesViewModel(
                 }
             }
             is Action.OnPhoneNumberChanged -> {
-                val allowedPhoneLength = getPhoneLengthByCountry(exchangeRatesState.country)
-                val isPhoneValid = exchangeRatesState.maxPhoneLength == action.phoneNumber.length
-                exchangeRatesState = exchangeRatesState.copy(phone = action.phoneNumber, maxPhoneLength = allowedPhoneLength!!, phoneNumberIsValid = isPhoneValid)
+                exchangeRatesState = exchangeRatesState.copy(phone = action.phoneNumber)
             }
             is Action.OnPhonePrefixChanged -> {
                 exchangeRatesState = exchangeRatesState.copy(prefix = action.phonePrefix)
-            }
-            is Action.OnSend -> {
-                exchangeRatesState = exchangeRatesState.copy(navigateToSuccessScreen = true)
             }
         }
 
@@ -73,7 +75,6 @@ class ExchangeRatesViewModel(
                     exchangeRatesState.firstNameError == null
                     && exchangeRatesState.lastNameError == null
                     && (exchangeRatesState.country.isNotEmpty() && exchangeRatesState.country != exchangeRatesState.countryPrompt)
-                    && exchangeRatesState.phoneNumberIsValid
                     && exchangeRatesState.amount.isNotEmpty()
                     && exchangeRatesState.amount.isBinary()
         )
@@ -114,7 +115,6 @@ class ExchangeRatesViewModel(
         data class OnPhoneNumberChanged(val phoneNumber: String): Action
         data class OnAmountChanged(val amount: String): Action
         data class OnCountrySelected(val country: String, val prompt: String): Action
-        object OnSend: Action
         object OnResetState: Action
     }
 }

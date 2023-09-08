@@ -23,9 +23,7 @@ data class ExchangeRatesState(
     val prefix: String = "+254",
     val phone: String = "",
     val maxPhoneLength: Int = 0,
-    val phoneNumberIsValid: Boolean = false,
-    val isSendButtonActive: Boolean = false,
-    val navigateToSuccessScreen: Boolean = false
+    val isSendButtonActive: Boolean = false
 ) {
     fun toMap(): Map<String, Double> {
         return mapOf(
