@@ -34,9 +34,15 @@ class ExchangeRatesViewModel(
             is Action.OnFirstNameChanged -> {
                 exchangeRatesState = exchangeRatesState.copy(firstName = action.firstName)
             }
-            is Action.OnLastNameChanged -> TODO()
-            is Action.OnPhoneNumberChanged -> TODO()
-            is Action.OnPhonePrefixChanged -> TODO()
+            is Action.OnLastNameChanged -> {
+                exchangeRatesState = exchangeRatesState.copy(lastName = action.lastName)
+            }
+            is Action.OnPhoneNumberChanged -> {
+                exchangeRatesState = exchangeRatesState.copy(phone = action.phoneNumber)
+            }
+            is Action.OnPhonePrefixChanged -> {
+                exchangeRatesState = exchangeRatesState.copy(prefix = action.phonePrefix)
+            }
             is Action.OnSend -> {
                 exchangeRatesState = exchangeRatesState.copy(navigateToSuccessScreen = true)
             }
@@ -67,10 +73,6 @@ class ExchangeRatesViewModel(
                     }
                 )
         }
-    }
-
-    private fun computeAmountToSendFor() {
-
     }
 
     sealed interface Action {

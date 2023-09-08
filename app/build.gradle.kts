@@ -62,6 +62,10 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material:material:1.5.1")
+
+    // compose navigation
+    implementation("androidx.navigation:navigation-compose:2.7.2")
 
     // koin dependency
     implementation("io.insert-koin:koin-androidx-compose:3.4.6")

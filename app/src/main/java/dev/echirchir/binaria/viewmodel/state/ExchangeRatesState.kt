@@ -8,11 +8,15 @@ data class ExchangeRatesState(
     val ugx: Double = 0.0,
     val error: String? = null,
     val country: String = "",
+    val countryCode: String = "+254",
     val firstName: String = "",
+    val firstNameError: String? = null,
     val lastName: String = "",
+    val lastNameError: String? = null,
     val amount: Double = 0.0,
     val prefix: String = "",
     val phone: String = "",
+    val isSendButtonActive: Boolean = false,
     val navigateToSuccessScreen: Boolean = false
 ) {
     fun toMap(): Map<String, Double> {
