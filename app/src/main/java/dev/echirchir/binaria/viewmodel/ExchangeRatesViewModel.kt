@@ -29,9 +29,12 @@ class ExchangeRatesViewModel(
                 fetchExchangeRates()
             }
             is Action.OnResetState -> {
-                exchangeRatesState = ExchangeRatesState(kes = exchangeRatesState.kes,
-                    ugx = exchangeRatesState.ugx, tzs = exchangeRatesState.tzs,
-                    ngn = exchangeRatesState.ngn, base = exchangeRatesState.base
+                exchangeRatesState = ExchangeRatesState(
+                    kes = exchangeRatesState.kes,
+                    ugx = exchangeRatesState.ugx,
+                    tzs = exchangeRatesState.tzs,
+                    ngn = exchangeRatesState.ngn,
+                    base = exchangeRatesState.base
                 )
             }
             is Action.OnAmountChanged -> {
@@ -47,20 +50,21 @@ class ExchangeRatesViewModel(
                     country = action.country,
                     currency = currency,
                     countryPrompt = action.prompt,
+                    countryError = null,
                     prefix = prefix,
                     maxPhoneLength = allowedPhoneLength
                 )
             }
             is Action.OnFirstNameChanged -> {
                 exchangeRatesState = if(action.firstName.isNotEmpty()) {
-                    exchangeRatesState.copy(firstName = action.firstName)
+                    exchangeRatesState.copy(firstName = action.firstName, firstNameError = null)
                 } else {
                     exchangeRatesState.copy(firstNameError = "")
                 }
             }
             is Action.OnLastNameChanged -> {
                 exchangeRatesState = if(action.lastName.isNotEmpty()) {
-                    exchangeRatesState.copy(lastName = action.lastName)
+                    exchangeRatesState.copy(lastName = action.lastName, lastNameError = null)
                 } else {
                     exchangeRatesState.copy(lastNameError = "")
                 }

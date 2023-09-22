@@ -152,10 +152,15 @@ fun SendMoneyFormScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
+                var first by remember {
+                    mutableStateOf(state.firstName)
+                }
+
                 BinariaTextField(
-                    value = state.firstName,
-                    onChange = {
-                        viewModel.onAction(ExchangeRatesViewModel.Action.OnFirstNameChanged(it))
+                    value = first,
+                    onChange = { newName ->
+                        first = newName
+                        viewModel.onAction(ExchangeRatesViewModel.Action.OnFirstNameChanged(newName))
                     },
                     hint = "Joe",
                     onDone = {},
@@ -175,10 +180,15 @@ fun SendMoneyFormScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
+                var last by remember {
+                    mutableStateOf(state.lastName)
+                }
+
                 BinariaTextField(
-                    value = state.lastName,
-                    onChange = {
-                        viewModel.onAction(ExchangeRatesViewModel.Action.OnLastNameChanged(it))
+                    value = last,
+                    onChange = { newLast ->
+                        last = newLast
+                        viewModel.onAction(ExchangeRatesViewModel.Action.OnLastNameChanged(newLast))
                     },
                     hint = "Munyao",
                     onDone = {},
@@ -311,7 +321,9 @@ fun SendMoneyFormScreen(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 BinariaButton(
-                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
                     label = "Send",
                     enabled = state.isSendButtonActive
                 ) {

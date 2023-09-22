@@ -12,6 +12,7 @@ data class ExchangeRatesState(
     val country: String = "",
     val currency: String = "",
     val countryPrompt: String = "",
+    val countryError: String? = null,
     val countryCode: String = "+254",
     val firstName: String = "",
     val firstNameError: String? = null,
